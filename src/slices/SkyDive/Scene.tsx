@@ -38,25 +38,26 @@ export default function Scene({ sentence, flavor }: SkyDiveProps) {
 
   useGSAP(() => {
     if (
-      !groupRef.current ||
-      !canRef.current ||
-      !cloud1Ref.current ||
-      !cloud2Ref.current ||
       !cloudsRef.current ||
-      !wordsRef.current
+      !canRef.current ||
+      !wordsRef.current ||
+      !cloud1Ref.current ||
+      !cloud2Ref.current
     )
       return;
 
-    //Set intial positions
+    // Set initial positions
     gsap.set(cloudsRef.current.position, { z: 10 });
-    gsap.set(canRef.current.position, { ...getXYPositions(-4) });
+    gsap.set(canRef.current.position, {
+      ...getXYPositions(-4),
+    });
 
     gsap.set(
       wordsRef.current.children.map((word) => word.position),
       { ...getXYPositions(7), z: 2 },
     );
 
-    //Spinning can
+    // Spinning can
     gsap.to(canRef.current.rotation, {
       y: Math.PI * 2,
       duration: 1.7,
@@ -64,7 +65,7 @@ export default function Scene({ sentence, flavor }: SkyDiveProps) {
       ease: "none",
     });
 
-    //Infinite cloud movement
+    // Infinite cloud movement
     const DISTANCE = 15;
     const DURATION = 6;
 
@@ -101,7 +102,7 @@ export default function Scene({ sentence, flavor }: SkyDiveProps) {
 
     scrollTl
       .to("body", {
-        backgroundColor: "#c0f0f5",
+        backgroundColor: "#C0F0F5",
         overwrite: "auto",
         duration: 0.1,
       })
@@ -131,8 +132,6 @@ export default function Scene({ sentence, flavor }: SkyDiveProps) {
       .to(cloudsRef.current.position, { z: 7, duration: 0.5 });
   });
 
-  console.log("sentence into Scene", sentence);
-
   return (
     <group ref={groupRef}>
       {/* Can */}
@@ -156,7 +155,7 @@ export default function Scene({ sentence, flavor }: SkyDiveProps) {
 
       {/* Text */}
       <group ref={wordsRef}>
-        <ThreeText sentence={sentence} color="#F97315" />
+        {sentence && <ThreeText sentence={sentence} color="#F97315" />}
       </group>
 
       {/* Lights */}
@@ -173,25 +172,22 @@ function ThreeText({
   sentence: string;
   color?: string;
 }) {
-  console.log(sentence);
-
   const words = sentence.toUpperCase().split(" ");
 
   const material = new THREE.MeshLambertMaterial();
-  const isDesktop = useMediaQuery("(min-widht: 950px)", true);
+  const isDesktop = useMediaQuery("(min-width: 950px)", true);
 
   return words.map((word: string, wordIndex: number) => (
     <Text
-      scale={isDesktop ? 1 : 0.5}
-      fontSize={1}
-      color={color}
-      font="/fonts/Alpino-Variable.woff"
       key={`${wordIndex}-${word}`}
+      scale={isDesktop ? 1 : 0.5}
+      color={color}
       material={material}
+      font="/fonts/Alpino-Variable.woff"
       fontWeight={900}
       anchorX={"center"}
       anchorY={"middle"}
-      characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ!.,?"
+      characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ!,.?'"
     >
       {word}
     </Text>
